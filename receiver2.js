@@ -2,13 +2,11 @@ const amqp = require('amqplib');
 
 async function receiveMessge() {
   /** 连接url直接写在前端吧 */
-  const connection = await amqp.connect('amqp://photolive:photolive@119.23.209.4:5672');
+  const connection = await amqp.connect('rabbitmq_address');
   const channel = await connection.createChannel();
   channel.assertExchange('topic_logs', 'topic', {durable: false});
   const queue = await channel.assertQueue('', {exclusive: true});
-  // 注意这里就是微信端连接的关键
-  // key为随意配置规则暂定为'album.live.AlbumId'
-  const key = 'album.live.2' // 这个与receiver不一样就是为了这个接收不到对应的推流消息
+  const key = 'a.1.2' // 这个与receiver不一样就是为了这个接收不到对应的推流消息
 
   channel.bindQueue(queue.queue, 'topic_logs', key);
 
